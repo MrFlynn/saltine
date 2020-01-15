@@ -1,12 +1,11 @@
 extern crate crypto;
 
-use crypto::md5::Md5;
 use crypto::digest::Digest;
+use crypto::md5::Md5;
 
-static BASE64_CRYPT: &'static str = &"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-static BASE64_INDICES: &'static [usize] = &[
-    0, 6, 12, 1, 7, 13, 2, 8, 14, 3, 9, 15, 4, 10, 5, 11
-];
+static BASE64_CRYPT: &'static str =
+    &"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+static BASE64_INDICES: &'static [usize] = &[0, 6, 12, 1, 7, 13, 2, 8, 14, 3, 9, 15, 4, 10, 5, 11];
 
 fn create_intermediate_hash(password: &String, salt: &String) -> [u8; 16] {
     let mut intermediate = Md5::new();
@@ -18,19 +17,19 @@ fn create_intermediate_hash(password: &String, salt: &String) -> [u8; 16] {
     intermediate.input_str(salt);
 
     // Generate alternate hash from password and salt.
-    alternate.input_str(&format!("{p}{s}{p}", p=password, s=salt));
-    
+    alternate.input_str(&format!("{p}{s}{p}", p = password, s = salt));
+
     // Copy result of hash to vector of u8.
     let mut alternate_sum = [0; 16];
     alternate.result(&mut alternate_sum);
-    
+
     // Push n bytes of alternate on to intermediate.
     for i in 0..password.len() {
         intermediate.input(&[alternate_sum[i]]);
     }
     alternate.reset();
 
-    // For each bit in the password length, append either a null byte or the first character of 
+    // For each bit in the password length, append either a null byte or the first character of
     // the password on to the intermediate.
     let first_char = password.as_str().chars().next().unwrap().to_string();
 
@@ -57,7 +56,7 @@ fn compute_password_hash(password: &String, salt: &String, intermediate: [u8; 16
     new_intermediate[..16].copy_from_slice(&intermediate);
 
     let mut hasher = Md5::new();
-    
+
     for i in 0..1000 {
         if (i & 1) != 0 {
             hasher.input_str(password);
@@ -103,7 +102,9 @@ fn crypt_base64_encode(hash: Vec<u8>) -> String {
 
     for indices in BASE64_INDICES.chunks(3) {
         if indices.len() == 3 {
-            let val = (hash[indices[0]] as u32) << 16 | (hash[indices[1]] as u32) << 8 | hash[indices[2]] as u32;
+            let val = (hash[indices[0]] as u32) << 16
+                | (hash[indices[1]] as u32) << 8
+                | hash[indices[2]] as u32;
             packed_base64_encode(&mut encoded, val, 4);
         } else if indices.len() == 1 {
             let val = hash[indices[0]] as u32;

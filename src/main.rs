@@ -19,9 +19,22 @@ fn main() {
 
     let filename: &str = matches.value_of("FILE").unwrap();
     let username: &str = matches.value_of("USERNAME").unwrap();
-    let threads: u32 = matches.value_of("THREADS").unwrap_or("1").to_string().parse::<u32>().unwrap();
-    let size: u32 = matches.value_of("SIZE").unwrap_or("6").to_string().parse::<u32>().unwrap();
+    let threads: u32 = matches
+        .value_of("THREADS")
+        .unwrap_or("1")
+        .to_string()
+        .parse::<u32>()
+        .unwrap();
+    let size: u32 = matches
+        .value_of("SIZE")
+        .unwrap_or("6")
+        .to_string()
+        .parse::<u32>()
+        .unwrap();
     let alphabet: &str = matches.value_of("ALPHABET").unwrap_or(DEFAULT_ALPHABET);
 
-    println!("{}, {}, {}, {}, {}", filename, username, threads, size, alphabet);
+    println!(
+        "{}, {}, {}, {}, {}",
+        filename, username, threads, size, alphabet
+    );
 }
