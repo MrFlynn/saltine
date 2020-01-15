@@ -2,6 +2,7 @@
 extern crate clap;
 
 mod crypt;
+mod utils;
 
 static DEFAULT_ALPHABET: &'static str = &"abcdefghijklmnopqrstuvwxyz";
 
@@ -33,8 +34,5 @@ fn main() {
         .unwrap();
     let alphabet: &str = matches.value_of("ALPHABET").unwrap_or(DEFAULT_ALPHABET);
 
-    println!(
-        "{}, {}, {}, {}, {}",
-        filename, username, threads, size, alphabet
-    );
+    println!("{:?}", utils::get_user_info(filename, username));
 }
