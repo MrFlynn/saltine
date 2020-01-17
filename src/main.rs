@@ -2,7 +2,7 @@
 extern crate clap;
 
 mod crypt;
-mod thread;
+mod generator;
 
 use std::fs::File;
 use std::io::{prelude::*, BufReader};

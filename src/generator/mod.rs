@@ -113,7 +113,7 @@ impl Iterator for WordGenerator {
 
 #[cfg(test)]
 mod tests {
-    use crate::thread::WordGenerator;
+    use crate::generator::WordGenerator;
 
     #[test]
     fn test_word_generator_simple() {
