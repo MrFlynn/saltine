@@ -37,9 +37,11 @@ fn find_password(
                     }
 
                     iterations += 1;
-                    if (iterations % 10000) == 0 {
+                    if iterations >= 10000 {
                         let prev = counter.fetch_add(iterations, Ordering::Relaxed);
                         println!("Tried {} passwords", prev + iterations);
+
+                        iterations = 0;
                     }
                 }
                 None => break,
