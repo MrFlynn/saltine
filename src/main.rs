@@ -1,9 +1,9 @@
 #[macro_use]
 extern crate clap;
 
-mod thread;
-mod generator;
 mod crypt;
+mod generator;
+mod thread;
 
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
@@ -63,5 +63,5 @@ fn main() {
     let alphabet: &str = matches.value_of("ALPHABET").unwrap_or(DEFAULT_ALPHABET);
 
     let (hash, salt) = get_user_info(filename, username);
-    thread::run(hash, salt, size, alphabet);
+    thread::run(hash, salt, size, threads, alphabet);
 }
