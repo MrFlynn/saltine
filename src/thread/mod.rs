@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 enum GeneratorState {
     Init,
     IncBase,
@@ -25,7 +26,7 @@ impl WordGenerator {
             space: working_space,
             state: GeneratorState::Init,
             position: 0,
-            count: 0
+            count: 0,
         }
     }
 
@@ -66,7 +67,7 @@ impl Iterator for WordGenerator {
                 GeneratorState::Init => {
                     self.state = GeneratorState::IncBase;
                     break;
-                },
+                }
                 GeneratorState::IncBase => {
                     if self.is_exhausted() {
                         self.elements[self.position] = 0;
@@ -79,7 +80,7 @@ impl Iterator for WordGenerator {
                         self.elements[self.position] += 1;
                         break;
                     }
-                },
+                }
                 GeneratorState::IncNext => {
                     if self.position >= self.size {
                         self.position = 0;
@@ -89,7 +90,7 @@ impl Iterator for WordGenerator {
                         self.position += 1;
                     } else {
                         self.elements[self.position] += 1;
-                        
+
                         self.state = GeneratorState::IncBase;
                         self.position = 0;
 
@@ -104,6 +105,10 @@ impl Iterator for WordGenerator {
         let output = self.output();
         Some(output)
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (1, Some(self.space.len().pow(self.size as u32)))
+    }
 }
 
 #[cfg(test)]
@@ -112,27 +117,30 @@ mod tests {
 
     #[test]
     fn test_word_generator_simple() {
-        let mut gen = WordGenerator::new('a', 2, vec!['a', 'b', 'c']);
-        
-        assert_eq!(Some(String::from("aa")), gen.next());
-        assert_eq!(Some(String::from("ab")), gen.next());
-        assert_eq!(Some(String::from("ac")), gen.next());
-        assert_eq!(None, gen.next());
+        let generator = WordGenerator::new('a', 2, vec!['a', 'b', 'c']);
+        let elements: Vec<String> = generator.take(3).collect();
+
+        assert_eq!(vec!["aa", "ab", "ac"], elements);
     }
 
     #[test]
     fn test_word_generator_complex() {
-        let mut gen = WordGenerator::new('a', 3, vec!['a', 'b', 'c']);
+        let generator = WordGenerator::new('a', 3, vec!['a', 'b', 'c']);
+        let elements: Vec<String> = generator.take(9).collect();
 
-        assert_eq!(Some(String::from("aaa")), gen.next());
-        assert_eq!(Some(String::from("aab")), gen.next());
-        assert_eq!(Some(String::from("aac")), gen.next());
-        assert_eq!(Some(String::from("aba")), gen.next());
-        assert_eq!(Some(String::from("abb")), gen.next());
-        assert_eq!(Some(String::from("abc")), gen.next());
-        assert_eq!(Some(String::from("aca")), gen.next());
-        assert_eq!(Some(String::from("acb")), gen.next());
-        assert_eq!(Some(String::from("acc")), gen.next());
-        assert_eq!(None, gen.next());
+        assert_eq!(
+            vec!["aaa", "aab", "aac", "aba", "abb", "abc", "aca", "acb", "acc"],
+            elements
+        );
+    }
+
+    #[test]
+    fn test_word_generator_complex_boundary() {
+        let generator = WordGenerator::new('a', 4, vec!['a', 'b', 'c']);
+        let elements: Vec<String> = generator.take(20).collect();
+
+        assert_eq!("abaa", elements[9]);
+        assert_eq!("abab", elements[10]);
+        assert_eq!("abba", elements[12]);
     }
 }
