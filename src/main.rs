@@ -2,9 +2,36 @@
 extern crate clap;
 
 mod crypt;
-mod utils;
+mod thread;
+
+use std::fs::File;
+use std::io::{prelude::*, BufReader};
 
 static DEFAULT_ALPHABET: &'static str = &"abcdefghijklmnopqrstuvwxyz";
+
+fn get_user_info(path: &str, username: &str) -> (String, String) {
+    let file = File::open(path).unwrap();
+    let reader = BufReader::new(file);
+
+    let mut hash = String::from("");
+    let mut salt = String::from("");
+
+    for line in reader.lines() {
+        let content = String::from(line.unwrap());
+
+        let first_split: Vec<&str> = content.split_terminator(':').collect();
+        if first_split[0] == username {
+            let second_split: Vec<&str> = first_split[1].split_terminator('$').collect();
+
+            hash = String::from(second_split[3]);
+            salt = String::from(second_split[2]);
+
+            break;
+        }
+    }
+
+    (hash, salt)
+}
 
 fn main() {
     let matches = clap_app!(saltine =>
@@ -26,13 +53,13 @@ fn main() {
         .to_string()
         .parse::<u32>()
         .unwrap();
-    let size: u32 = matches
+    let size: usize = matches
         .value_of("SIZE")
         .unwrap_or("6")
         .to_string()
-        .parse::<u32>()
+        .parse::<usize>()
         .unwrap();
     let alphabet: &str = matches.value_of("ALPHABET").unwrap_or(DEFAULT_ALPHABET);
 
-    println!("{:?}", utils::get_user_info(filename, username));
+    let (hash, salt) = get_user_info(filename, username);
 }
