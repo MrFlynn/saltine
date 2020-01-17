@@ -105,7 +105,7 @@ pub fn run(hash: String, salt: String, size: usize, threads: u32, alphabet: &str
         Ok(status) => {
             println!("Tried {} passwords", counter.load(Ordering::Relaxed));
             println!("Password found: {}", status.0);
-            println!("Program completed in {:?}s", timer.elapsed());
+            println!("Program completed in {:?}", timer.elapsed());
         }
         Err(_) => panic!("Worker threads disconnected!"),
     }
