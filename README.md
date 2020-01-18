@@ -5,7 +5,7 @@ This program was build for the computer security class at UC Riverside (CS 165).
 As such, this program should only be used for reasonable<sup>[1]</sup> academic purposes.
 
 ## Design
-It works by diving the problem space into separate "buckets" characters that each
+It works by diving the problem space into separate "buckets" of characters that each
 thread works on in parallel. Each bucket has a base character from which it builds
 all possible permutations in the given problems space (character set). The more
 threads the program is given, the more it can divide the work<sup>[2]</sup>.
