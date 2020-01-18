@@ -32,7 +32,8 @@ $ ./saltine /path/to/etc_shadow \
 ```
 
 This was run on a virtual machine with an Intel Xeon Platinum 8168 with 16 threads 
-and 64GB of RAM allocated<sup>[3]</sup>.
+and 64GB of RAM allocated<sup>[3]</sup>. At peak, this program can do 80k hashes per 
+second (or 5k hashes per second per thread).
 
 ## Notes
 **[1]** Please don't copy this program and pass it off as your own work. That is 
